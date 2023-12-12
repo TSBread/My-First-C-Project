@@ -24,3 +24,5 @@
 - [安装与配置 C++/Visual Studio 22 | PDCurses/MOD on Windows](https://www.cnblogs.com/NicholasFlare/p/17815462.html)
 - [VS 2019 编译程序在其它电脑运行报丢失VCRUNTIME140D.dll 【终极解决方案】](https://blog.csdn.net/bai_ge_i_yin/article/details/108755221#comments_26996161)
 - [在线字符画生成器](https://tools.kalvinbg.cn/image/asciiPic)
+- [Astounding Royalty Free Stock Music](https://mixkit.co/free-stock-music/)
+- [小森平的免费下载音效](https://taira-komori.jpn.org/freesoundcn.html)

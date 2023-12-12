@@ -24,6 +24,8 @@ void ScreenInit() {
 	init_pair(2, COLOR_RED, COLOR_BLACK);  // 黑底红字
 	init_pair(3, COLOR_WHITE, COLOR_BLACK);  // 黑底白字
 	init_pair(4, COLOR_BLUE, COLOR_BLACK);  // 黑底蓝字
+	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);  // 黑底品红字
+	init_pair(6, COLOR_CYAN, COLOR_BLACK);  // 黑底灰字
 }
 
 /*显示Sneak与游戏名称图片*/
@@ -34,9 +36,8 @@ static void ScreenSneakPic(WINDOW* OpWindow, int y, int x) {
 	int i = 0;
 
 	FILE* fp;
-	char* FileName = "Sneak.txt";
 	char LineStr[257] = { '\0' };
-	if ((fp = fopen(FileName, "r+")) != NULL) {
+	if ((fp = fopen(TITLE_NAME, "r+")) != NULL) {
 		wattroff(OpWindow, A_REVERSE);
 		while (fgets(LineStr, sizeof(LineStr), fp) != NULL) {
 			mvwprintw(OpWindow, y + i, x, LineStr);
@@ -68,6 +69,7 @@ static void ScreenMenuWindowFuncStart() {
 
 /*菜单子函数：显示本地历史排行榜*/
 static void ScreenMenuWindowFuncRank() {
+	PlaySounds(Select);
 	clear();
 
 	WINDOW* MenuRank = newwin(GAME_WINDOWS_HEIGHT, GAME_WINDOWS_WIDTH, 0, 0);
@@ -108,7 +110,10 @@ static void ScreenMenuWindowFuncRank() {
 
 		wrefresh(MenuRank);
 
-		if (KeyClick == 'Q' || KeyClick == 'q') break;
+		if (KeyClick == 'Q' || KeyClick == 'q') {
+			PlaySounds(Select);
+			break;
+		}
 	}
 	wclear(MenuRank);
 	delwin(MenuRank);
@@ -117,6 +122,7 @@ static void ScreenMenuWindowFuncRank() {
 
 /*菜单子函数：游戏设置*/
 static void ScreenMenuWindowFuncSetting() {
+	PlaySounds(Select);
 	clear();
 
 	WINDOW* MenuSetting = newwin(GAME_WINDOWS_HEIGHT, GAME_WINDOWS_WIDTH, 0, 0);
@@ -137,7 +143,7 @@ static void ScreenMenuWindowFuncSetting() {
 
 	char KeyClick = '\0';
 	while (KeyClick = getch()) {
-		ScreenTipHub(MenuSetting, "W : Up, S : Down, A : Add Value, D : Remove Value, Q : Back");
+		ScreenTipHub(MenuSetting, "W : Up, S : Down, A : Remove Value, D : Add Value, Q : Back");
 		mvwprintw(MenuSetting, StartLine, GAME_WINDOWS_WIDTH / 2 - (int)strlen("Game Setting:") / 2, "Game Setting:");
 		for (int i = 0; i < sizeof(Info) / sizeof(Info[0]); i++) {
 			if (i == Select) {
@@ -154,20 +160,25 @@ static void ScreenMenuWindowFuncSetting() {
 
 		switch (KeyClick) {
 		case 'W':case 'w':
+			PlaySounds(Arrow);
 			Select = (Select <= 0) ? 0 : --Select;
 			break;
 		case 'S':case 's':
+			PlaySounds(Arrow);
 			Select = (Select >= sizeof(Info) / sizeof(Info[0]) - 1) ? sizeof(Info) / sizeof(Info[0]) - 1 : ++Select;
 			break;
 		case 'A':case 'a':
+			//PlaySounds(Arrow);
 			wclear(MenuSetting);
 			(*Info[Select].value) = (*Info[Select].value) <= 1 ? 1 : --(*Info[Select].value);
 			break;
 		case 'D':case 'd':
+			//PlaySounds(Arrow);
 			wclear(MenuSetting);
 			(*Info[Select].value)++;
 			break;
 		case 'Q':case 'q':
+			PlaySounds(Select);
 			delwin(MenuSetting);
 			ScreenMenuWindowLoop();
 			break;
@@ -177,6 +188,7 @@ static void ScreenMenuWindowFuncSetting() {
 
 /*菜单子函数：显示作者信息*/
 static void ScreenMenuWindowFuncAuthor() {
+	PlaySounds(Select);
 	clear();
 
 	WINDOW* MenuAuthor = newwin(GAME_WINDOWS_HEIGHT, GAME_WINDOWS_WIDTH, 0, 0);
@@ -198,7 +210,7 @@ static void ScreenMenuWindowFuncAuthor() {
 
 	char KeyClick = '\0';
 	while (KeyClick = getch()) {
-		ScreenTipHub(MenuAuthor, "Ctrl + MouseLeft : Open URL | Q : Back");
+		ScreenTipHub(MenuAuthor, "Q : Back");
 
 		wattron(MenuAuthor, YELLOW);
 		mvwprintw(MenuAuthor, StartLine, GAME_WINDOWS_WIDTH / 2 - (int)strlen("My Infomation:") / 2, "My Infomation:");
@@ -211,7 +223,10 @@ static void ScreenMenuWindowFuncAuthor() {
 
 		wrefresh(MenuAuthor);
 
-		if (KeyClick == 'Q' || KeyClick == 'q') break;
+		if (KeyClick == 'Q' || KeyClick == 'q') {
+			PlaySounds(Select);
+			break;
+		}
 	}
 	wclear(MenuAuthor);
 	delwin(MenuAuthor);
@@ -220,6 +235,7 @@ static void ScreenMenuWindowFuncAuthor() {
 
 /*菜单子函数：退出程序*/
 static void ScreenMenuWindowFuncExit() {
+	PlaySounds(Select);
 	endwin();
 	exit(0);
 }
@@ -259,9 +275,11 @@ void ScreenMenuWindowLoop() {
 		KeyClick = wgetch(Menu);
 		switch (KeyClick) {
 		case 'W':case 'w':  // 上
+			PlaySounds(Arrow);
 			Select = (Select <= 0) ? 0 : --Select;
 			break;
 		case 'S':case 's':  // 下
+			PlaySounds(Arrow);
 			Select = (Select >= MENU_WINDOWS_OPTION_NUM - 1) ? MENU_WINDOWS_OPTION_NUM - 1 : ++Select;
 			break;
 		case 'E':case 'e':
@@ -477,15 +495,19 @@ void ScreenGameWindowLoop() {
 			ScreenGameWindowFuncPrint(Game, Head, Item);  // 打印
 
 			if (IsEat(Head, Item)) {
-				ThisScore += Eat_Apple_Bonus;
+				PlaySounds(Eat);
+				ITEM_FUNC Temp = { .ScoreP = &ThisScore,.ExtraBonus = Eat_Apple_Bonus };
+				//AddScore(Temp);
+				//ThisScore += Eat_Apple_Bonus;
 				ClearItem(Item);
-				Item = NewItem(Item, Head, Game->_maxx - 2, Game->_maxy - 2, TestFunc, 0, 1, 0);
+				Item = NewItem(Item, Head, Game->_maxx - 2, Game->_maxy - 2, AddScore(Temp), 0, 1, 0);
 			}
 			else {
 				DeleteTail(Head);  // 删除蛇尾
 			}
 
 			if (ScreenGameWindowFuncIsEnd(Game, Head)) {  // 判断是否游戏结束
+				PlaySounds(End);
 				for (int i = 0; i < 5; i++) {  // 分数闪烁
 					ScreenScoreBoard(Hub, GAME_WINDOWS_WIDTH * 73 / 100, 2, ThisScore, 4, WHITE);
 					Sleep(250);
@@ -497,6 +519,7 @@ void ScreenGameWindowLoop() {
 				/*Debug*/
 				delwin(Hub);
 				delwin(Game);
+				PlaySounds(Menu);
 				ScreenMenuWindowLoop();
 				break;
 			}

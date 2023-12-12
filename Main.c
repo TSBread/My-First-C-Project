@@ -52,8 +52,10 @@ int main() {
 
 	/*Debug*/
 	//Debug();
+	
 
 	/*循环*/
+	PlaySounds(Menu);
 	ScreenMenuWindowLoop();  // 进入菜单界面
 
 	return 0;

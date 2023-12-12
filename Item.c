@@ -1,7 +1,7 @@
 #include "Game.h"
 
 /*新建一个物品*/
-ITEM* NewItem(ITEM* LastItem, BODY* Head, int PosXMax, int PosYMax, void (*Func)(), int RandMin, int RandMax, int DeathTime) {  // ..., 蛇头位置(为了获取蛇头及蛇身坐标), 设置位置最大随机数 , 该物品功能, 设置最小随机值, 设置最大随机值, 设置死亡时间
+ITEM* NewItem(ITEM* LastItem, BODY* Head, int PosXMax, int PosYMax, int (*Func)(ITEM_FUNC), int RandMin, int RandMax, int DeathTime) {  // ..., 蛇头位置(为了获取蛇头及蛇身坐标), 设置位置最大随机数 , 该物品功能, 设置最小随机值, 设置最大随机值, 设置死亡时间
 	ITEM* NewItem = (ITEM*)malloc(sizeof(ITEM) * 1);
 	BODY* SneakPointer = Head;
 	POS* SneakPos = (POS*)malloc(sizeof(POS) * GetSneakLen(Head));  // 创建坐标列表，包含蛇的所有坐标
@@ -91,4 +91,9 @@ void ClearItem(ITEM* Item) {
 
 /*物品功能子函数：无功能*/
 void TestFunc() {
+}
+
+/*物品功能子函数：增加分数*/
+int AddScore(ITEM_FUNC Info) {
+	return *(Info.ScoreP) += Info.ExtraBonus;
 }
