@@ -198,15 +198,19 @@ static void ScreenMenuWindowFuncAuthor() {
 		char* text;
 		void (*color)();
 	} INFO;
-	INFO Info[5] = {
-		{"GitHub : TSBread (https://github.com/TSBread)",NULL},
-		{"BiliBili : TSBread2960278 (https://space.bilibili.com/450655172)",BLUE},
+	INFO Info[9] = {
+		{"GitHub : TSBread (https://github.com/TSBread)",WHITE},
+		{"Repositories(Star + 1, Plz) : https://github.com/TSBread/My-First-C-Project",CYAN},
+		{" ",NULL},
+		{"BiliBili : TSBread2960278 (https://space.bilibili.com/450655172)",WHITE},
+		{"Video Release : https://www.bilibili.com/video/BV1e94y1P7U5",CYAN},
+		{" ",NULL},
 		{"School ID : 230807011065 (Electronic Information Engineering 2303)",YELLOW},
 		{" ",NULL},
 		{"More Infomation Please Open `README.md`",WHITE}
 	};
 
-	int StartLine = 2, SplitSpace = 2;  // 起始行、信息间隔行
+	int StartLine = 2, SplitSpace = 1;  // 起始行、信息间隔行
 
 	char KeyClick = '\0';
 	while (KeyClick = getch()) {
